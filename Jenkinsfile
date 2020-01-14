@@ -50,13 +50,6 @@ touch "dist/client.js"
     }
 
     stage('QA') {
-      agent {
-        docker {
-          image 'tomcat:8.0-jre8'
-          args '-u 0:0 -p 11080:8080'
-        }
-
-      }
       steps {
         unstash 'server'
         unstash 'client'
@@ -67,6 +60,7 @@ mkdir -p $APP_DIR/ROOT
 cp dist/* $APP_DIR/ROOT
 /usr/local/tomcat/bin/startup.sh
 '''
+        input(message: 'is QA Passed??', ok: 'Go Ahead with Deployment', submitter: 'mjena')
       }
     }
 
