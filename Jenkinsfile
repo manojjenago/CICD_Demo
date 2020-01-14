@@ -31,5 +31,23 @@ touch "dist/client.js"
       }
     }
 
+    stage('Chrome') {
+      parallel {
+        stage('Chrome') {
+          steps {
+            sh '''echo "mvn test -Dbrowser=chrome"
+'''
+          }
+        }
+
+        stage('Firefox') {
+          steps {
+            sh 'echo "mvn test -Dbrowser=firefox"'
+          }
+        }
+
+      }
+    }
+
   }
 }
