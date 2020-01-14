@@ -31,7 +31,7 @@ touch "dist/client.js"
       }
     }
 
-    stage('Chrome') {
+    stage('Test') {
       parallel {
         stage('Chrome') {
           steps {
@@ -46,6 +46,27 @@ touch "dist/client.js"
           }
         }
 
+      }
+    }
+
+    stage('QA') {
+      agent {
+        docker {
+          image 'tomcat:8.0-jre8'
+          args '-u 0:0 -p 11080:8080'
+        }
+
+      }
+      steps {
+        unstash 'server'
+        unstash 'client'
+        sh '''APP_DIR=/user/local/tomcat/webapps
+rm -rf $APP_DIR/ROOT
+cp target/server.war $APP_DIR/server.war
+mkdir -p $APP_DIR/ROOT
+cp dist/* $APP_DIR/ROOT
+/usr/local/tomcat/bin/startup.sh
+'''
       }
     }
 
