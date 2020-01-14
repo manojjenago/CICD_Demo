@@ -1,7 +1,7 @@
 pipeline {
   agent any
   stages {
-    stage('Server') {
+    stage('Build') {
       parallel {
         stage('Server') {
           steps {
@@ -10,6 +10,7 @@ mvn -version
 mkdir -p target
 touch "target/server.war"
 '''
+            stash(name: 'server', includes: '**/*.war')
           }
         }
 
@@ -23,6 +24,7 @@ hello! welcome to Jenkins pipeline for CICD
 EOF
 touch "dist/client.js"
 '''
+            stash(name: 'client', includes: '**/dist/*')
           }
         }
 
