@@ -53,7 +53,7 @@ touch "dist/client.js"
       steps {
         unstash 'server'
         unstash 'client'
-        sh '''APP_DIR=/user/local/tomcat/webapps
+        sh '''APP_DIR=/usr/local/tomcat/webapps
 rm -rf $APP_DIR/ROOT
 cp target/server.war $APP_DIR/server.war
 mkdir -p $APP_DIR/ROOT
