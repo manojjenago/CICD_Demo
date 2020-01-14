@@ -53,12 +53,12 @@ touch "dist/client.js"
       steps {
         unstash 'server'
         unstash 'client'
-        sh '''APP_DIR=/usr/local/tomcat/webapps
+        sh '''APP_DIR=C:\\usr\\local\\tomcat\\webapps
 rm -rf $APP_DIR/ROOT
 cp target/server.war $APP_DIR/server.war
 mkdir -p $APP_DIR/ROOT
 cp dist/* $APP_DIR/ROOT
-/usr/local/tomcat/bin/startup.sh
+C:\\usr\\local\\tomcat\\webapps\\startup.sh
 '''
         input(message: 'is QA Passed??', ok: 'Go Ahead with Deployment', submitter: 'mjena')
       }
