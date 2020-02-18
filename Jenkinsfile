@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Build') {
       parallel {
-        stage('Server') {
+        stage('CheckoutCode') {
           steps {
             sh '''echo "Building the server code..."
 mvn -version
@@ -14,7 +14,7 @@ touch "target/server.war"
           }
         }
 
-        stage('Client') {
+        stage('BuildDevCode') {
           steps {
             sh '''echo "Building the client code..."
 npm install --save react
@@ -31,33 +31,50 @@ touch "dist/client.js"
       }
     }
 
-    stage('Test') {
+    stage('UnitTest') {
       parallel {
-        stage('Chrome') {
+        stage('CheckOutUnitTestCode') {
           steps {
             sh '''echo "mvn test -Dbrowser=chrome"
 '''
           }
         }
 
-        stage('Firefox') {
+        stage('RunUnitTests') {
           steps {
             sh 'echo "mvn test -Dbrowser=firefox"'
+          }
+        }
+
+        stage('PublishReport') {
+          steps {
+            sh 'echo "Report Published for Unit Test"'
           }
         }
 
       }
     }
 
-    stage('QA') {
-      steps {
-        unstash 'server'
-        unstash 'client'
-        sh '''echo "deploy to server ..."
+    stage('Run E2E Regression') {
+      parallel {
+        stage('Run E2E Regression') {
+          steps {
+            unstash 'server'
+            unstash 'client'
+            sh '''echo "deploy to server ..."
 
 '''
-        input(message: 'is QA Passed??', ok: 'Go Ahead with Deployment', submitter: 'mjena')
-        echo 'APP_DIR=C:\\usr\\local\\tomcat\\webapps rm -rf $APP_DIR/ROOT cp target/server.war $APP_DIR/server.war mkdir -p $APP_DIR/ROOT cp dist/* $APP_DIR/ROOT C:\\usr\\local\\tomcat\\webapps\\startup.sh'
+            input(message: 'is QA Passed??', ok: 'Go Ahead with Deployment', submitter: 'mjena')
+            echo 'APP_DIR=C:\\usr\\local\\tomcat\\webapps rm -rf $APP_DIR/ROOT cp target/server.war $APP_DIR/server.war mkdir -p $APP_DIR/ROOT cp dist/* $APP_DIR/ROOT C:\\usr\\local\\tomcat\\webapps\\startup.sh'
+          }
+        }
+
+        stage('') {
+          steps {
+            sh 'echo "Check Out From SVN"'
+          }
+        }
+
       }
     }
 
