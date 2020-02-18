@@ -112,6 +112,7 @@ touch "dist/client.js"
         stage('PublishE2EReport') {
           steps {
             sh 'echo "Publish Report for E2E on TST"'
+            input(message: 'Is Regression OK in TST', ok: 'Go Ahead with Deployment to UAT')
           }
         }
 
@@ -135,7 +136,7 @@ touch "dist/client.js"
 
         stage('Run Regression Test') {
           steps {
-            sh 'echo "C'
+            sh 'echo "Running regression code"'
           }
         }
 
