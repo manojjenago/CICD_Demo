@@ -55,7 +55,7 @@ touch "dist/client.js"
       }
     }
 
-    stage('Checkout Regression test scripts') {
+    stage('Smoke Testing') {
       parallel {
         stage('Check Smoke Test') {
           steps {
@@ -89,10 +89,13 @@ touch "dist/client.js"
       steps {
         echo 'APP_DIR=C:\\usr\\local\\tomcat\\webapps rm -rf $APP_DIR/ROOT cp target/server.war $APP_DIR/server.war mkdir -p $APP_DIR/ROOT cp dist/* $APP_DIR/ROOT C:\\usr\\local\\tomcat\\webapps\\startup.sh'
         sh 'echo "Deployment to the TST Server is done"'
+        unstash 'server'
+        unstash 'client'
+        sh 'echo "Deployment is done to test Env"'
       }
     }
 
-    stage('Checkout Regression Test Code') {
+    stage('Regression Test on TST') {
       parallel {
         stage('Checkout Regression Test Code') {
           steps {
@@ -106,12 +109,49 @@ touch "dist/client.js"
           }
         }
 
-        stage('') {
+        stage('PublishE2EReport') {
           steps {
             sh 'echo "Publish Report for E2E on TST"'
           }
         }
 
+      }
+    }
+
+    stage('Deploy UAT') {
+      steps {
+        unstash 'server'
+        unstash 'client'
+      }
+    }
+
+    stage('Regression Test on UAT') {
+      parallel {
+        stage('Checkout Regression Test Code') {
+          steps {
+            sh 'echo "Starting regression testing on UAT, Check out code from SVN for UAT"'
+          }
+        }
+
+        stage('Run Regression Test') {
+          steps {
+            sh 'echo "C'
+          }
+        }
+
+        stage('Publish Report') {
+          steps {
+            sh 'echo "Publish Regression Report"'
+            input(message: 'Is regression OK', ok: 'Go Ahead to deploy in Prod', submitter: 'mjena')
+          }
+        }
+
+      }
+    }
+
+    stage('Delpoy to PROD') {
+      steps {
+        sh 'echo "Deploy to Prod"'
       }
     }
 
