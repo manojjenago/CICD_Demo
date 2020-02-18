@@ -57,7 +57,7 @@ touch "dist/client.js"
 
     stage('Checkout Regression test scripts') {
       parallel {
-        stage('Checkout Regression test scripts') {
+        stage('Check Smoke Test') {
           steps {
             unstash 'server'
             unstash 'client'
@@ -69,14 +69,14 @@ touch "dist/client.js"
           }
         }
 
-        stage('Run Regression Test') {
+        stage('Run Smoke Test') {
           steps {
-            sh 'echo " Running regression code"'
+            sh 'echo " Running smoke test code"'
             sh 'echo "Publish reports :=="'
           }
         }
 
-        stage('') {
+        stage('PublishE2EReport') {
           steps {
             input(message: 'Is Testing Passed', ok: 'Go Ahead with Deployment', submitter: 'mjena@radial.com')
           }
@@ -89,6 +89,29 @@ touch "dist/client.js"
       steps {
         echo 'APP_DIR=C:\\usr\\local\\tomcat\\webapps rm -rf $APP_DIR/ROOT cp target/server.war $APP_DIR/server.war mkdir -p $APP_DIR/ROOT cp dist/* $APP_DIR/ROOT C:\\usr\\local\\tomcat\\webapps\\startup.sh'
         sh 'echo "Deployment to the TST Server is done"'
+      }
+    }
+
+    stage('Checkout Regression Test Code') {
+      parallel {
+        stage('Checkout Regression Test Code') {
+          steps {
+            sh 'echo "Checkout code from SVN"'
+          }
+        }
+
+        stage('Run Regression Test') {
+          steps {
+            sh 'echo "Run Regression Code on TST"'
+          }
+        }
+
+        stage('') {
+          steps {
+            sh 'echo "Publish Report for E2E on TST"'
+          }
+        }
+
       }
     }
 
