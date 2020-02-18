@@ -55,32 +55,40 @@ touch "dist/client.js"
       }
     }
 
-    stage('Run E2E Regression') {
+    stage('Checkout Regression test scripts') {
       parallel {
-        stage('Run E2E Regression') {
+        stage('Checkout Regression test scripts') {
           steps {
             unstash 'server'
             unstash 'client'
             sh '''echo "deploy to server ..."
 
 '''
-            input(message: 'is QA Passed??', ok: 'Go Ahead with Deployment', submitter: 'mjena')
             echo 'APP_DIR=C:\\usr\\local\\tomcat\\webapps rm -rf $APP_DIR/ROOT cp target/server.war $APP_DIR/server.war mkdir -p $APP_DIR/ROOT cp dist/* $APP_DIR/ROOT C:\\usr\\local\\tomcat\\webapps\\startup.sh'
+            sh 'echo ":Check out code from SVN for Testing "'
+          }
+        }
+
+        stage('Run Regression Test') {
+          steps {
+            sh 'echo " Running regression code"'
+            sh 'echo "Publish reports :=="'
           }
         }
 
         stage('') {
           steps {
-            sh 'echo "Check Out From SVN"'
+            input(message: 'Is Testing Passed', ok: 'Go Ahead with Deployment', submitter: 'mjena@radial.com')
           }
         }
 
       }
     }
 
-    stage('Deploy') {
+    stage('Deploy To TST') {
       steps {
         echo 'APP_DIR=C:\\usr\\local\\tomcat\\webapps rm -rf $APP_DIR/ROOT cp target/server.war $APP_DIR/server.war mkdir -p $APP_DIR/ROOT cp dist/* $APP_DIR/ROOT C:\\usr\\local\\tomcat\\webapps\\startup.sh'
+        sh 'echo "Deployment to the TST Server is done"'
       }
     }
 
