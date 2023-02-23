@@ -1,0 +1,118 @@
+package com.example.cucumber;
+
+import cucumber.api.Result;
+import cucumber.api.TestCase;
+import cucumber.api.TestStep;
+import cucumber.api.event.*;
+import cucumber.api.formatter.Formatter;
+import cucumber.runtime.CucumberException;
+
+import java.io.*;
+import java.util.*;
+
+public class ConsoleOutputFormatter implements Formatter, ConcurrentEventListener {
+
+    private Map<TestCase, List<TestStep>> testCases = new LinkedHashMap<>();
+
+    @Override
+    public void setEventPublisher(EventPublisher publisher) {
+        publisher.registerHandlerFor(TestRunStarted.class, this::handleTestRunStarted);
+        publisher.registerHandlerFor(TestCaseStarted.class, this::handleTestCaseStarted);
+        publisher.registerHandlerFor(TestStepStarted.class, this::handleTestStepStarted);
+        publisher.registerHandlerFor(TestStepFinished.class, this::handleTestStepFinished);
+        publisher.registerHandlerFor(TestCaseFinished.class, this::handleTestCaseFinished);
+        publisher.registerHandlerFor(TestRunFinished.class, this::handleTestRunFinished);
+    }
+
+    private void handleTestRunStarted(TestRunStarted event) {
+        // Reset testCases map
+        testCases.clear();
+    }
+
+    private void handleTestCaseStarted(TestCaseStarted event) {
+        // Add new test case to map
+        testCases.put(event.getTestCase(), new ArrayList<>());
+    }
+
+    private void handleTestStepStarted(TestStepStarted event) {
+        // Add new test step to current test case
+        TestCase testCase = event.getTestCase();
+        List<TestStep> testSteps = testCases.get(testCase);
+        testSteps.add(event.getTestStep());
+    }
+
+    private void handleTestStepFinished(TestStepFinished event) {
+        // Collect console output from System.out and System.err streams
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+        event.getTestStep().run(ps, ps);
+
+        // Add console output to current test step
+        TestStep testStep = event.getTestStep();
+        testStep.setDefinitionArgument(baos.toString());
+    }
+
+    private void handleTestCaseFinished(TestCaseFinished event) {
+        // Nothing to do here
+    }
+
+    private void handleTestRunFinished(TestRunFinished event) {
+        // Access report object and add console output as a new section
+        for (Map.Entry<TestCase, List<TestStep>> entry : testCases.entrySet()) {
+            TestCase testCase = entry.getKey();
+            List<TestStep> testSteps = entry.getValue();
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("Console output for scenario: ").append(testCase.getName()).append("\n\n");
+            for (TestStep testStep : testSteps) {
+                String consoleOutput = (String) testStep.getDefinitionArgument();
+                if (consoleOutput != null && !consoleOutput.isEmpty()) {
+                    sb.append("Step: ").append(testStep.getStepLocation()).append("\n")
+                            .append(consoleOutput).append("\n\n");
+                }
+            }
+
+            // Add console output as new section to report
+            event.getReport().generateReport(sb.toString());
+        }
+    }
+
+    @Override
+    public void uri(String s) {
+        // Nothing to do here
+    }
+
+    @Override
+    public void feature(Feature feature) {
+        // Nothing to do here
+    }
+
+    @Override
+    public void scenarioOutline(ScenarioOutline scenarioOutline) {
+        // Nothing to do here
+    }
+
+    @Override
+    public void examples(Examples examples) {
+        // Nothing to do here
+    }
+
+    @Override
+    public void startOfScenarioLifeCycle(Scenario scenario) {
+        // Nothing to do here
+    }
+
+    @Override
+    public void background(Background background) {
+        // Nothing to do here
+
+
+
+@CucumberOptions(
+    features = "src/test/resources/features",
+    glue = "com.example.steps",
+    plugin = {
+        "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:",
+        "com.example.cucumber.ConsoleOutputFormatter"
+    }
+)
