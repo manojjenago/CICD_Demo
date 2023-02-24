@@ -1,0 +1,2297 @@
+jenaman@gmail.com
+how to add a highlight when an element is selected in selenium without much changing the code
+In Selenium, you can add a highlight to an element when it is selected by using JavaScript to modify the CSS style of the element. Here's a sample code that you can use:
+
+python
+Copy code
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
+
+# Create a new instance of the Firefox driver
+driver = webdriver.Firefox()
+
+# Navigate to a web page
+driver.get("https://www.example.com")
+
+# Define a function to highlight an element
+def highlight(element):
+    driver.execute_script("arguments[0].setAttribute('style', 'background: yellow; border: 2px solid red;');", element)
+
+# Find the element you want to select
+element = driver.find_element(By.XPATH, "//input[@id='search-input']")
+
+# Highlight the element
+highlight(element)
+
+# Select the element and type some text
+element.click()
+element.send_keys("Hello World!")
+
+# Unhighlight the element
+driver.execute_script("arguments[0].setAttribute('style','border: solid 2px white');", element)
+
+# Close the browser
+driver.quit()
+In this example, the highlight function takes an element as an argument and uses JavaScript to modify its CSS style to make it stand out (yellow background and red border).
+
+You can call this function before or after you interact with the element, depending on your use case. Once you're done with the element, you can use another JavaScript command to reset its style to its original state (white border in this case).
+
+Note that this approach modifies the CSS style of the element directly, so if the page has its own CSS styling that interferes with the highlight, you may need to adjust the highlight function to override those styles.
+
+
+
+
+jenaman@gmail.com
+what is the easiest way to change existing code with a simple change for highlight
+Assuming you have existing code that interacts with elements and you want to add a highlight when an element is selected without modifying the existing code too much, one approach would be to define a function that wraps the existing code and adds the highlight before and after the interaction with the element. Here's an example:
+
+python
+Copy code
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+# Define a function to highlight an element
+def highlight(element):
+    driver.execute_script("arguments[0].setAttribute('style', 'background: yellow; border: 2px solid red;');", element)
+
+# Define a function to interact with an element and add a highlight
+def interact_with_element(element, interaction_function):
+    highlight(element)  # add highlight
+    interaction_function(element)  # interact with element
+    highlight(element)  # remove highlight
+
+# Create a new instance of the Firefox driver
+driver = webdriver.Firefox()
+
+# Navigate to a web page
+driver.get("https://www.example.com")
+
+# Find the element you want to interact with
+element = driver.find_element(By.XPATH, "//input[@id='search-input']")
+
+# Use the interact_with_element function to interact with the element and add a highlight
+interact_with_element(element, lambda e: e.click())
+
+# Use the interact_with_element function again to interact with the element and add a highlight
+interact_with_element(element, lambda e: e.send_keys("Hello World!"))
+
+# Close the browser
+driver.quit()
+In this example, the interact_with_element function takes an element and an interaction function as arguments. It adds a highlight to the element before and after calling the interaction function, which is passed as a lambda function in this example.
+
+You can use this interact_with_element function to wrap your existing code that interacts with elements. This way, you only need to make small changes to your existing code to add the highlight, by replacing the direct interaction with the element with a call to interact_with_element.
+
+
+
+
+Regenerate response
+
+ChatGPT Feb 13 Version. Free Research Preview. Our goal is to make AI systems more natural and safe to interact with. Your feedback will help us improve.
+New chat
+Add Highlight on Selected Element.
+
+
+Embed Console in HTML.
+IntelliJ: Generate Cucumber Reports
+Duplicate Values in Map.
+Java Console Output to Extent.
+Capture Cucumber logs using Extent.properties.
+Cucumber report with console output.
+IntelliJ Cucumber Test Logs
+Capture Console Details: Extent Report
+Append Console to Extent Report
+Java current directory path.
+Path of extent.properties
+Extending Classes in Java.
+Adding Console Logs.
+Get String from XPATH
+Cucumber + Extent report.
+New chat
+String assignment result.
+Add File to Google Sheet
+Enable Record Type Access.
+Show more
+Clear conversations
+Upgrade to Plus
+NEW
+Dark mode
+Updates & FAQ
+Log out
+----------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+If you want to capture all console output in the HTML report, you can use a library such as Log4j or Logback to redirect the console output to a file or a logger.
+
+Here is an example of how to configure Logback to capture console output in a file:
+
+Add the Logback dependency to your project. If you're using Maven, add the following dependency to your pom.xml file:
+xml
+Copy code
+<dependency>
+    <groupId>ch.qos.logback</groupId>
+    <artifactId>logback-classic</artifactId>
+    <version>1.2.6</version>
+</dependency>
+Create a logback.xml file in the src/test/resources directory with the following content:
+
+
+
+
+
+
+
+
+
+
+
+
+
+In your TestRunner class, add the following code to initialize the Logback logging system:
+<configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%-5level [%thread] %logger{15} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/test.log</file>
+        <encoder>
+            <pattern>%-5level [%thread] %logger{15} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </root>
+</configuration>
+
+
+In your TestRunner class, add the following code to initialize the Logback logging system:
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class TestRunner {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestRunner.class);
+
+    // ...
+
+    @BeforeClass
+    public static void setupLogging() {
+        System.setProperty("logback.configurationFile", "logback.xml");
+        LOGGER.info("Logback logging system initialized.");
+    }
+
+    // ...
+}
+
+
+In your extent-config.xml file, add the following configuration to include the log file in the HTML report:
+
+<extentreports>
+    <configuration>
+        <!-- ... -->
+        <logger>
+            <file>${basedir}/logs/test.log</file>
+        </logger>
+    </configuration>
+</extentreports>
+
+
+Create a log4j2.xml file in the src/test/resources directory with the following content:
+
+<extentreports>
+    <configuration>
+        <!-- ... -->
+        <logger>
+            <file>${basedir}/logs/test.log</file>
+        </logger>
+    </configuration>
+</extentreports>
+Run your tests and view the HTML report. The report should include the console output and the log file output.
+
+Create a log4j2.xml file in the src/test/resources directory with the following content:
+999999999999999999999999999999999
+
+
+Create a log4j2.xml file in the src/test/resources directory with the following content:
+
+
+Create a log4j2.xml file in the src/test/resources directory with the following content:
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-core</artifactId>
+    <version>2.17.1</version>
+</dependency>
+
+
+Create a log4j2.xml file in the src/test/resources directory with the following content:
+
+
+<Configuration>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %logger{36} - %msg%n"/>
+        </Console>
+        <File name="file" fileName="logs/test.log">
+            <PatternLayout pattern="%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %logger{36} - %msg%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="file"/>
+        </Root>
+    </Loggers>
+</Configuration>
+
+
+
+In your TestRunner class, add the following code to initialize the Log4j logging system:
+java
+Co
+
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public class TestRunner {
+    private static final Logger LOGGER = LogManager.getLogger(TestRunner.class);
+
+    // ...
+
+    @BeforeClass
+    public static void setupLogging() {
+        System.setProperty("log4j.configurationFile", "log4j2.xml");
+        LOGGER.info("Log4j logging system initialized.");
+    }
+
+    // ...
+}
+
+
+
+In your extent-config.xml file, add the following configuration to include the log file in the HTML report:
+
+
+<extentreports>
+    <configuration>
+        <!-- ... -->
+        <logger>
+            <file>${basedir}/logs/test.log</file>
+        </logger>
+    </configuration>
+</extentreports>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+jenaman@gmail.com
+how to embed the terminal or consoles outputs from intellij to HTML report in extent report for cucumber in java
+To embed the terminal or console outputs from IntelliJ to an HTML report in Extent Report for Cucumber in Java, you can use the following steps:
+
+In your Java code, create an instance of the ExtentReports class, which is the main class for Extent Report.
+java
+Copy code
+ExtentReports extent = new ExtentReports();
+Create an instance of the ExtentHtmlReporter class, which is used to generate the HTML report.
+java
+Copy code
+ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter("extent.html");
+Attach the ExtentHtmlReporter object to the ExtentReports object.
+java
+Copy code
+extent.attachReporter(htmlReporter);
+In your Cucumber step definition file, you can capture the console or terminal output by using the ProcessBuilder class.
+java
+Copy code
+ProcessBuilder pb = new ProcessBuilder("your command here");
+Process p = pb.start();
+BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+String line;
+while ((line = reader.readLine()) != null) {
+    System.out.println(line);
+    // Add the console output to the Extent Report
+    extent.createTest("Console Output").info(line);
+}
+Finally, call the flush() method on the ExtentReports object to write the report to the HTML file.
+java
+Copy code
+extent.flush();
+This will embed the console or terminal output into the HTML report generated by Extent Report.
+
+
+
+
+jenaman@gmail.com
+can i do the same thing as above using extent.properties file 
+Yes, you can use an extent.properties file to configure your Extent Report and add the console or terminal output to the report. Here's how you can do it:
+
+Create an extent.properties file in your project's resources directory.
+
+Add the following properties to the extent.properties file to configure your Extent Report:
+
+csharp
+Copy code
+extent.reporter.html.start=false
+extent.reporter.html.out=extent.html
+The extent.reporter.html.start property is set to false so that the HTML report is not generated automatically when the ExtentReports object is created. The extent.reporter.html.out property specifies the file name for the HTML report.
+
+In your Java code, create an instance of the ExtentReports class, and load the extent.properties file.
+java
+Copy code
+ExtentReports extent = new ExtentReports();
+extent.loadConfig(new File("src/main/resources/extent.properties"));
+In your Cucumber step definition file, you can capture the console or terminal output by using the ProcessBuilder class.
+java
+Copy code
+ProcessBuilder pb = new ProcessBuilder("your command here");
+Process p = pb.start();
+BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+String line;
+while ((line = reader.readLine()) != null) {
+    System.out.println(line);
+    // Add the console output to the Extent Report
+    extent.createTest("Console Output").info(line);
+}
+Finally, call the flush() method on the ExtentReports object to write the report to the HTML file.
+java
+Copy code
+extent.flush();
+This will embed the console or terminal output into the HTML report generated by Extent Report, using the configuration specified in the extent.properties file.
+
+
+
+
+jenaman@gmail.com
+ProcessBuilder pb = new ProcessBuilder("your command here"); what should be replaced in place of "your command here" i want to capture for a feature mentioned in extent.properties in cucumber.options
+To capture the console or terminal output for a feature mentioned in extent.properties in Cucumber.options, you can do the following:
+
+In your extent.properties file, specify the feature file path(s) in the cucumber.options property.
+For example:
+
+bash
+Copy code
+cucumber.options=src/test/resources/features/myFeature.feature
+In your Cucumber step definition file, you can get the feature file path(s) from the cucumber.options system property using the System.getProperty() method.
+java
+Copy code
+String cucumberOptions = System.getProperty("cucumber.options");
+List<String> featureFiles = new ArrayList<>();
+Pattern pattern = Pattern.compile("--.*?\\.feature");
+Matcher matcher = pattern.matcher(cucumberOptions);
+while (matcher.find()) {
+    String feature = matcher.group().replaceAll("--", "");
+    featureFiles.add(feature);
+}
+This code uses a regular expression pattern to find all feature file paths in the cucumber.options system property, and adds them to a list.
+
+In your Cucumber step definition file, you can use the feature file path(s) to run the Cucumber tests using the CucumberOptions annotation.
+java
+Copy code
+@CucumberOptions(features = {"src/test/resources/features/myFeature.feature"})
+public class MyFeatureTest {
+    // Step definitions here
+}
+In your Cucumber step definition file, you can capture the console or terminal output for the feature by using the ProcessBuilder class and passing the feature file path(s) as command line arguments.
+java
+Copy code
+for (String featureFile : featureFiles) {
+    ProcessBuilder pb = new ProcessBuilder("cucumber", featureFile);
+    Process p = pb.start();
+    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    String line;
+    while ((line = reader.readLine()) != null) {
+        System.out.println(line);
+        // Add the console output to the Extent Report
+        extent.createTest("Console Output").info(line);
+    }
+}
+This code iterates through the feature file paths and runs each feature file using the cucumber command, passing the feature file path as a command line argument. The console output for each feature file is captured and added to the Extent Report.
+
+
+
+
+jenaman@gmail.com
+but the extent.property has all the details and how can i achive the above using extent.properties file
+To capture the console or terminal output for a feature mentioned in extent.properties in Cucumber.options, you can do the following:
+
+In your extent.properties file, specify the feature file path(s) in the cucumber.options property.
+For example:
+
+bash
+Copy code
+cucumber.options=src/test/resources/features/myFeature.feature
+In your Java code, create an instance of the ExtentReports class, and load the extent.properties file.
+java
+Copy code
+ExtentReports extent = new ExtentReports();
+extent.loadConfig(new File("src/main/resources/extent.properties"));
+In your Cucumber step definition file, you can get the feature file path(s) from the cucumber.options system property using the System.getProperty() method.
+java
+Copy code
+String cucumberOptions = System.getProperty("cucumber.options");
+List<String> featureFiles = new ArrayList<>();
+Pattern pattern = Pattern.compile("--.*?\\.feature");
+Matcher matcher = pattern.matcher(cucumberOptions);
+while (matcher.find()) {
+    String feature = matcher.group().replaceAll("--", "");
+    featureFiles.add(feature);
+}
+This code uses a regular expression pattern to find all feature file paths in the cucumber.options system property, and adds them to a list.
+
+In your Cucumber step definition file, you can use the feature file path(s) to run the Cucumber tests using the CucumberOptions annotation.
+java
+Copy code
+@CucumberOptions(features = {"src/test/resources/features/myFeature.feature"})
+public class MyFeatureTest {
+    // Step definitions here
+}
+In your Cucumber step definition file, you can capture the console or terminal output for the feature by using the ProcessBuilder class and passing the feature file path(s) as command line arguments.
+java
+Copy code
+for (String featureFile : featureFiles) {
+    ProcessBuilder pb = new ProcessBuilder("cucumber", featureFile);
+    Process p = pb.start();
+    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    String line;
+    while ((line = reader.readLine()) != null) {
+        System.out.println(line);
+        // Add the console output to the Extent Report
+        extent.createTest("Console Output").info(line);
+    }
+}
+This code iterates through the feature file paths and runs each feature file using the cucumber command, passing the feature file path as a command line argument. The console output for each feature file is captured and added to the Extent Report.
+
+Note that the cucumber command should be in the system's path, or you can provide the full path to the cucumber command in the ProcessBuilder constructor.
+
+
+
+
+jenaman@gmail.com
+is there anyway to avoid writing the code to  Cucumber step definition file and capture the terminal or console logs 
+Yes, there are some plugins and libraries available that can help you capture the console or terminal output in Cucumber without writing code in the step definition file. Here are a few options:
+
+Cucumber Extent Reporter: This is an open-source Cucumber reporting plugin that provides detailed HTML reports with charts and graphs. It also captures the console output and includes it in the report. You can configure it to capture the console output for all scenarios, or for specific scenarios or tags. To use it, you need to add the following dependency to your pom.xml file:
+xml
+Copy code
+<dependency>
+    <groupId>com.aventstack</groupId>
+    <artifactId>extentreports-cucumber6-adapter</artifactId>
+    <version>1.0.9</version>
+</dependency>
+Then, you can add the following plugin to your CucumberOptions annotation:
+
+java
+Copy code
+@CucumberOptions(plugin = {"com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"})
+And configure the extent.properties file to include the console logs:
+
+bash
+Copy code
+extent.reporter.html.start=false
+extent.reporter.html.out=reports/extent-report.html
+extent.reporter.html.config=src/test/resources/extent-config.xml
+extent.reporter.html.addTestRunnerOutput=true
+extent.reporter.html.addTags=true
+extent.reporter.html.autoCreateRelativePathMedia=true
+extent.reporter.html.view=tests
+extent.reporter.html.captureConsole=true
+Log4j: Log4j is a popular logging library for Java that allows you to configure the logging output to various destinations, including the console, files, and databases. You can configure Log4j to capture the console output and log it to a file or database, and then include the log file or database in your Cucumber report. To use it, you need to add the following dependency to your pom.xml file:
+xml
+Copy code
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-api</artifactId>
+    <version>2.14.1</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-core</artifactId>
+    <version>2.14.1</version>
+</dependency>
+Then, you can create a Log4j configuration file, for example log4j2.xml, that includes an appender to capture the console output:
+
+xml
+Copy code
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>
+And configure the log4j2.xml file in your CucumberOptions annotation:
+
+java
+Copy code
+@CucumberOptions(plugin = {"pretty", "html:target/cucumber-reports",
+        "json:target/cucumber-reports/cucumber.json"},
+        features = {"src/test/resources/features/"},
+        glue = {"com.example.steps"})
+@Log4j2
+public class RunCucumberTest {
+    // ...
+}
+You can then include the log file or database in your Cucumber report using the appropriate Cucumber reporting plugin.
+
+
+
+
+jenaman@gmail.com
+how to anable headless mode with extent.properties
+To enable headless mode for your test execution using extent.properties, you can add the following configuration property:
+
+javascript
+Copy code
+webdriver.headless=true
+This will configure your WebDriver to run in headless mode. Additionally, you may need to set the appropriate browser options for headless mode, depending on which browser you are using. Here's an example for Chrome:
+
+css
+Copy code
+webdriver.chrome.driver=path/to/chromedriver
+webdriver.chrome.args=--headless --disable-gpu --window-size=1920,1080
+This sets the path to the Chrome driver, and configures the browser options to run in headless mode, disable the GPU, and set the window size to 1920x1080.
+
+You can also set other browser options or command-line arguments using the webdriver.chrome.args property, separated by spaces. For example:
+
+css
+Copy code
+webdriver.chrome.args=--headless --disable-gpu --window-size=1920,1080 --no-sandbox --disable-dev-shm-usage
+These options may be necessary to run the browser in headless mode on certain platforms or configurations.
+
+
+
+
+jenaman@gmail.com
+how to enable headless mode with extent.properties in cucumber report
+To enable headless mode with extent.properties in Cucumber report, you can follow these steps:
+
+Add the following configuration property in extent.properties file to enable headless mode for WebDriver:
+javascript
+Copy code
+webdriver.headless=true
+Depending on which browser you are using, you may need to set additional properties for headless mode. For example, if you are using Chrome, you can set the following properties in extent.properties file:
+css
+Copy code
+webdriver.chrome.driver=path/to/chromedriver
+webdriver.chrome.args=--headless --disable-gpu --window-size=1920,1080
+This sets the path to the Chrome driver, and configures the browser options to run in headless mode, disable the GPU, and set the window size to 1920x1080.
+
+In your CucumberOptions annotation, you can set the plugin property to include the pretty and html reporters, as well as any other reporters you may want to use. For example:
+java
+Copy code
+@CucumberOptions(
+    features = "src/test/resources/features",
+    glue = "com.example.steps",
+    plugin = {"pretty", "html:target/cucumber-reports"}
+)
+public class TestRunner {
+    // ...
+}
+Run your Cucumber tests using the mvn test command, or your preferred build tool. The test results will be generated in the target/cucumber-reports directory.
+The headless mode configuration will be applied to all the scenarios in your Cucumber test suite. You can customize the configuration for each scenario or feature using hooks or other mechanisms provided by Cucumber.
+
+
+
+
+jenaman@gmail.com
+extent.reporter.html.start=false
+extent.reporter.html.out=reports/extent-report.html
+extent.reporter.html.config=src/test/resources/extent-config.xml
+extent.reporter.html.addTestRunnerOutput=true
+extent.reporter.html.addTags=true
+extent.reporter.html.autoCreateRelativePathMedia=true
+extent.reporter.html.view=tests
+extent.reporter.html.captureConsole=true with this is not creating HTML as extent.reporter.html.start=false 
+The extent.reporter.html.start property in the extent.properties file is used to specify whether to start the HTML reporter or not. When this property is set to false, the HTML reporter will not start and the report file will not be created.
+
+To enable the HTML reporter and generate the report file, you need to set extent.reporter.html.start property to true.
+
+Additionally, you can set the extent.reporter.html.captureConsole property to true to capture the console logs in the HTML report.
+
+Here is an example of a properly configured extent.properties file:
+
+bash
+Copy code
+# Start HTML reporter
+extent.reporter.html.start=true
+
+# Set output file path
+extent.reporter.html.out=reports/extent-report.html
+
+# Set configuration file path
+extent.reporter.html.config=src/test/resources/extent-config.xml
+
+# Add test runner output to report
+extent.reporter.html.addTestRunnerOutput=true
+
+# Add scenario tags to report
+extent.reporter.html.addTags=true
+
+# Enable automatic creation of relative path media
+extent.reporter.html.autoCreateRelativePathMedia=true
+
+# Set default view to 'tests'
+extent.reporter.html.view=tests
+
+# Capture console logs in report
+extent.reporter.html.captureConsole=true
+Make sure to adjust the extent.reporter.html.out and extent.reporter.html.config properties to match your project's directory structure and file paths.
+
+
+
+
+jenaman@gmail.com
+but the above code is not writing all the console output to the HTML report just adds when the test fails , but want to capture all the console output that I see in intellij while running the feature file
+If you want to capture all console output in the HTML report, you can use a library such as Log4j or Logback to redirect the console output to a file or a logger.
+
+Here is an example of how to configure Logback to capture console output in a file:
+
+Add the Logback dependency to your project. If you're using Maven, add the following dependency to your pom.xml file:
+xml
+Copy code
+<dependency>
+    <groupId>ch.qos.logback</groupId>
+    <artifactId>logback-classic</artifactId>
+    <version>1.2.6</version>
+</dependency>
+Create a logback.xml file in the src/test/resources directory with the following content:
+xml
+Copy code
+<configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%-5level [%thread] %logger{15} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/test.log</file>
+        <encoder>
+            <pattern>%-5level [%thread] %logger{15} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </root>
+</configuration>
+This configuration sets up two appenders: one for console output and one for file output. The file appender writes logs to a file in the logs directory.
+
+In your TestRunner class, add the following code to initialize the Logback logging system:
+java
+Copy code
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class TestRunner {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestRunner.class);
+
+    // ...
+
+    @BeforeClass
+    public static void setupLogging() {
+        System.setProperty("logback.configurationFile", "logback.xml");
+        LOGGER.info("Logback logging system initialized.");
+    }
+
+    // ...
+}
+This code sets the system property logback.configurationFile to the path of the logback.xml file, and initializes the logger.
+
+In your extent-config.xml file, add the following configuration to include the log file in the HTML report:
+xml
+Copy code
+<extentreports>
+    <configuration>
+        <!-- ... -->
+        <logger>
+            <file>${basedir}/logs/test.log</file>
+        </logger>
+    </configuration>
+</extentreports>
+This configuration adds the log file to the HTML report.
+
+Run your tests and view the HTML report. The report should include the console output and the log file output.
+Note that this approach may not capture some console output that is generated by system processes or external libraries. In that case, you may need to use a different approach to capture the output, such as using a custom PrintStream to capture System.out and System.err, or using a separate logging library for capturing console output.
+
+
+
+
+jenaman@gmail.com
+how can i do the same thing with log4j instead of logback
+Here is an example of how to configure Log4j to capture console output in a file:
+
+Add the Log4j dependency to your project. If you're using Maven, add the following dependency to your pom.xml file:
+xml
+Copy code
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-core</artifactId>
+    <version>2.17.1</version>
+</dependency>
+Create a log4j2.xml file in the src/test/resources directory with the following content:
+xml
+Copy code
+<Configuration>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %logger{36} - %msg%n"/>
+        </Console>
+        <File name="file" fileName="logs/test.log">
+            <PatternLayout pattern="%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %logger{36} - %msg%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="file"/>
+        </Root>
+    </Loggers>
+</Configuration>
+This configuration sets up two appenders: one for console output and one for file output. The file appender writes logs to a file in the logs directory.
+
+In your TestRunner class, add the following code to initialize the Log4j logging system:
+java
+Copy code
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public class TestRunner {
+    private static final Logger LOGGER = LogManager.getLogger(TestRunner.class);
+
+    // ...
+
+    @BeforeClass
+    public static void setupLogging() {
+        System.setProperty("log4j.configurationFile", "log4j2.xml");
+        LOGGER.info("Log4j logging system initialized.");
+    }
+
+    // ...
+}
+This code sets the system property log4j.configurationFile to the path of the log4j2.xml file, and initializes the logger.
+
+In your extent-config.xml file, add the following configuration to include the log file in the HTML report:
+xml
+Copy code
+<extentreports>
+    <configuration>
+        <!-- ... -->
+        <logger>
+            <file>${basedir}/logs/test.log</file>
+        </logger>
+    </configuration>
+</extentreports>
+This configuration adds the log file to the HTML report.
+
+Run your tests and view the HTML report. The report should include the console output and the log file output.
+Note that this approach may not capture some console output that is generated by system processes or external libraries. In that case, you may need to use a different approach to capture the output, such as using a custom PrintStream to capture System.out and System.err, or using a separate logging library for capturing console output.
+
+
+
+
+Regenerate response
+
+ChatGPT Feb 13 Version. Free Research Preview. Our goal is to make AI systems more natural and safe to interact with. Your feedback will help us improve.
+New chat
+Embed Console in HTML.
+
+
+IntelliJ: Generate Cucumber Reports
+Duplicate Values in Map.
+Java Console Output to Extent.
+Capture Cucumber logs using Extent.properties.
+Cucumber report with console output.
+IntelliJ Cucumber Test Logs
+Capture Console Details: Extent Report
+Append Console to Extent Report
+Java current directory path.
+Path of extent.properties
+Extending Classes in Java.
+Adding Console Logs.
+Get String from XPATH
+Cucumber + Extent report.
+New chat
+String assignment result.
+Add File to Google Sheet
+Enable Record Type Access.
+Assigning record types: System Administrator.
+Show more
+Clear conversations
+Upgrade to Plus
+NEW
+Dark mode
+Updates & FAQ
+Log out
+
+
+-----------------------------------
+
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+
+public class TestRunner {
+    private static final String PROP_FILE = "./extent.properties";
+    private static final Logger LOGGER = Logger.getLogger(TestRunner.class.getName());
+
+    public static void main(String[] args) throws IOException {
+        Properties props = new Properties();
+        FileInputStream fis = new FileInputStream(PROP_FILE);
+        props.load(fis);
+
+        ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(props.getProperty("extent.reporter.html.out"));
+
+        ExtentReports extent = new ExtentReports();
+        extent.attachReporter(htmlReporter);
+        extent.setSystemInfo("OS", "Windows 10");
+        extent.setSystemInfo("Browser", "Chrome");
+        extent.setSystemInfo("Environment", "Test");
+        extent.setSystemInfo("User Name", System.getProperty("user.name"));
+        extent.setSystemInfo("Java Version", System.getProperty("java.version"));
+
+        Handler consoleHandler = new ConsoleHandler();
+        consoleHandler.setLevel(Level.parse(props.getProperty("extent.console.level")));
+        consoleHandler.setFormatter(new SimpleFormatter());
+        LOGGER.addHandler(consoleHandler);
+
+        LOGGER.setLevel(Level.parse(props.getProperty("extent.console.level")));
+
+        // Your Cucumber test execution code here
+
+        extent.flush();
+    }
+
+    // Add a method to log messages to the console and the Extent Report
+    public static void log(Status status, String message) {
+        ExtentTest test = extent.createTest(Thread.currentThread().getStackTrace()[2].getMethodName());
+        test.log(status, message);
+        LOGGER.log(status.toLevel(), message);
+    }
+}
+
+
+---------------------------
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import java.util.logging.Level;
+
+public class TestRunner {
+    private static final String PROP_FILE = "./extent.properties";
+
+    // ...
+
+    @After
+    public void afterScenario(Scenario scenario) {
+        if (scenario.isFailed()) {
+            test.log(Status.FAIL, "Scenario Failed");
+        } else {
+           
+
+------------------------------------------------------------------
+
+	import com.aventstack.extentreports.reporter.configuration.Theme;
+import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.reporter.configuration.ChartLocation;
+import com.aventstack.extentreports.reporter.configuration.Protocol;
+import com.aventstack.extentreports.reporter.configuration.ViewName;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+
+public class TestRunner {
+    private static final String PROP_FILE = "./extent.properties";
+
+    public static void main(String[] args) throws IOException {
+        Properties props = new Properties();
+        FileInputStream fis = new FileInputStream(PROP_FILE);
+        props.load(fis);
+
+        ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(props.getProperty("extent.reporter.html.out"));
+        htmlReporter.config().setChartVisibilityOnOpen(true);
+        htmlReporter.config().setDocumentTitle("Extent Report Demo");
+        htmlReporter.config().setReportName("Test Results");
+        htmlReporter.config().setTestViewChartLocation(ChartLocation.TOP);
+        htmlReporter.config().setTheme(Theme.DARK);
+        htmlReporter.config().setEncoding("UTF-8");
+        htmlReporter.config().setProtocol(Protocol.HTTPS);
+        htmlReporter.config().setTimelineEnabled(true);
+        htmlReporter.config().setTimelineView(ViewName.ALL);
+
+        ExtentReports extent = new ExtentReports();
+        extent.attachReporter(htmlReporter);
+        extent.setSystemInfo("OS", "Windows 10");
+        extent.setSystemInfo("Browser", "Chrome");
+        extent.setSystemInfo("Environment", "Test");
+        extent.setSystemInfo("User Name", System.getProperty("user.name"));
+        extent.setSystemInfo("Java Version", System.getProperty("java.version"));
+
+        extent.setReportUsesManualConfiguration(true);
+        extent.setAnalysisStrategy(AnalysisStrategy.TEST);
+
+        extent.setConsoleLogLevel(Level.valueOf(props.getProperty("extent.console.level")));
+        extent.setBrowserLogLevel(Level.valueOf(props.getProperty("extent.browser.level")));
+
+        // Your Cucumber test execution code here
+    }
+}
+---------------------------------------------------------------------------------------
+# Set the Extent Report output directory
+extent.reporter.html.start=false
+extent.reporter.html.out=./test-output/ExtentReport.html
+
+# Set the Console log level
+extent.console.level=INFO
+
+# Set the Browser log level
+extent.browser.level=SEVERE
+
+---------------------------------------------------
+public static List<String> getConsoleLogs() {
+    List<String> logs = new ArrayList<String>();
+
+    // Get console logs from System.out stream
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    PrintStream printStreamOut = new PrintStream(out);
+    System.setOut(printStreamOut);
+    String consoleOut = out.toString();
+    logs.addAll(Arrays.asList(consoleOut.split("\\r?\\n")));
+
+    // Get console logs from System.err stream
+    ByteArrayOutputStream err = new ByteArrayOutputStream();
+    PrintStream printStreamErr = new PrintStream(err);
+    System.setErr(printStreamErr);
+    String consoleErr = err.toString();
+    logs.addAll(Arrays.asList(consoleErr.split("\\r?\\n")));
+
+    return logs;
+}
+(((((((((((((((((((((((((((((((((((((((
+
+# ExtentReports configuration
+extent.reporter.html.out = output/report.html
+extent.reporter.html.config = extent-config.xml
+extent.reporter.consoleReporterEnabled = true
+extent.reporter.console.showTestRunnerOutput = true
+
+##################################################################3
+
+how to add all the console logs that is shown during running a test in intellij to extent html report with extent.properties only##############################
+#############################################################3
+
+<?xml version="1.0" encoding="UTF-8"?>
+<extentreports>
+    <configuration>
+        <!-- Report theme -->
+        <theme>standard</theme>
+
+        <!-- Timestamp format for report folder -->
+        <folderDateFormat>yyyyMMdd_HHmmss</folderDateFormat>
+
+        <!-- Report name -->
+        <reportName>Sample Test Report</reportName>
+
+        <!-- Document encoding -->
+        <encoding>UTF-8</encoding>
+
+        <!-- Protocol for JS and CSS files -->
+        <protocol>https</protocol>
+
+        <!-- Chart visibility on report -->
+        <charts>true</charts>
+
+        <!-- Test view order -->
+        <testViewChart>true</testViewChart>
+
+        <!-- Document title -->
+        <documentTitle>Extent Reports - Sample Test Report</documentTitle>
+
+        <!-- Headline of report -->
+        <reportHeadline>Sample Test Report</reportHeadline>
+
+        <!-- General CSS file for report -->
+        <css>css/main.css</css>
+
+        <!-- System information -->
+        <systemInfo>
+            <parameter>
+                <name>Environment</name>
+                <value>Production</value>
+            </parameter>
+            <parameter>
+                <name>Browser</name>
+                <value>Chrome</value>
+            </parameter>
+        </systemInfo>
+
+        <!-- Mapping of test names -->
+        <testNameMapping>
+            <defaultTestName>Unnamed Test</defaultTestName>
+        </testNameMapping>
+
+        <!-- Mapping of category names -->
+        <categoryOrder>
+            <category>Smoke</category>
+            <category>Regression</category>
+            <category>Sanity</category>
+            <category>Functional</category>
+        </categoryOrder>
+
+        <!-- Mapping of exception parsers -->
+        <exceptionMapper>
+            <exceptionType>org.openqa.selenium.NoSuchElementException</exceptionType>
+            <mapperClass>com.aventstack.extentreports.markuputils.ExceptionMarkupParser</mapperClass>
+        </exceptionMapper>
+    </configuration>
+</extentreports>
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+how to capture logs from Run tool window from intellij to extent report in cucumber using extent.properties
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%555package com.example.cucumber;
+
+import cucumber.api.Result;
+import cucumber.api.TestCase;
+import cucumber.api.TestStep;
+import cucumber.api.event.*;
+import cucumber.api.formatter.Formatter;
+import cucumber.runtime.CucumberException;
+
+import java.io.*;
+import java.util.*;
+
+public class ConsoleOutputFormatter implements Formatter, ConcurrentEventListener {
+
+    private Map<TestCase, List<TestStep>> testCases = new LinkedHashMap<>();
+
+    @Override
+    public void setEventPublisher(EventPublisher publisher) {
+        publisher.registerHandlerFor(TestRunStarted.class, this::handleTestRunStarted);
+        publisher.registerHandlerFor(TestCaseStarted.class, this::handleTestCaseStarted);
+        publisher.registerHandlerFor(TestStepStarted.class, this::handleTestStepStarted);
+        publisher.registerHandlerFor(TestStepFinished.class, this::handleTestStepFinished);
+        publisher.registerHandlerFor(TestCaseFinished.class, this::handleTestCaseFinished);
+        publisher.registerHandlerFor(TestRunFinished.class, this::handleTestRunFinished);
+    }
+
+    private void handleTestRunStarted(TestRunStarted event) {
+        // Reset testCases map
+        testCases.clear();
+    }
+
+    private void handleTestCaseStarted(TestCaseStarted event) {
+        // Add new test case to map
+        testCases.put(event.getTestCase(), new ArrayList<>());
+    }
+
+    private void handleTestStepStarted(TestStepStarted event) {
+        // Add new test step to current test case
+        TestCase testCase = event.getTestCase();
+        List<TestStep> testSteps = testCases.get(testCase);
+        testSteps.add(event.getTestStep());
+    }
+
+    private void handleTestStepFinished(TestStepFinished event) {
+        // Collect console output from System.out and System.err streams
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+        event.getTestStep().run(ps, ps);
+
+        // Add console output to current test step
+        TestStep testStep = event.getTestStep();
+        testStep.setDefinitionArgument(baos.toString());
+    }
+
+    private void handleTestCaseFinished(TestCaseFinished event) {
+        // Nothing to do here
+    }
+
+    private void handleTestRunFinished(TestRunFinished event) {
+        // Access report object and add console output as a new section
+        for (Map.Entry<TestCase, List<TestStep>> entry : testCases.entrySet()) {
+            TestCase testCase = entry.getKey();
+            List<TestStep> testSteps = entry.getValue();
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("Console output for scenario: ").append(testCase.getName()).append("\n\n");
+            for (TestStep testStep : testSteps) {
+                String consoleOutput = (String) testStep.getDefinitionArgument();
+                if (consoleOutput != null && !consoleOutput.isEmpty()) {
+                    sb.append("Step: ").append(testStep.getStepLocation()).append("\n")
+                            .append(consoleOutput).append("\n\n");
+                }
+            }
+
+            // Add console output as new section to report
+            event.getReport().generateReport(sb.toString());
+        }
+    }
+
+    @Override
+    public void uri(String s) {
+        // Nothing to do here
+    }
+
+    @Override
+    public void feature(Feature feature) {
+        // Nothing to do here
+    }
+
+    @Override
+    public void scenarioOutline(ScenarioOutline scenarioOutline) {
+        // Nothing to do here
+    }
+
+    @Override
+    public void examples(Examples examples) {
+        // Nothing to do here
+    }
+
+    @Override
+    public void startOfScenarioLifeCycle(Scenario scenario) {
+        // Nothing to do here
+    }
+
+    @Override
+    public void background(Background background) {
+        // Nothing to do here
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+how to include console output from runtime in cucumber report
+
+how to include console output from runtime in cucumber report
+@CucumberOptions(
+    plugin = {"<your-custom-formatter-package>.CustomFormatter"}
+)
+
+
+	@Override
+public void result(Result result) {
+    // Collect console output from System.out and System.err streams
+    // You can store the output in a data structure such as a StringBuilder or List
+}
+
+example of all the above implementation
+
+@CucumberOptions(
+    features = "src/test/resources/features",
+    glue = "com.example.steps",
+    plugin = {
+        "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:",
+        "com.example.cucumber.ConsoleOutputFormatter"
+    }
+)
+
+
+
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
+
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import cucumber.api.CucumberOptions;
+import cucumber.api.junit.Cucumber;
+
+import java.util.logging.Logger;
+
+@RunWith(Cucumber.class)
+@CucumberOptions(
+    features = "src/test/resources/features",
+    glue = "com.example.stepdefinitions",
+    plugin = {"pretty"}
+)
+public class CucumberRunner {
+
+    private static ExtentReports extentReports;
+    private static ExtentTest extentTest;
+
+    @BeforeClass
+    public static void setup() {
+        extentReports = new ExtentReports();
+        ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter("test-output/extent-report.html");
+        extentReports.attachReporter(htmlReporter);
+        extentTest = extentReports.createTest("Cucumber Runner");
+    }
+
+    @Test
+    public void runCucumber() {
+        Logger logger = Logger.getLogger(CucumberRunner.class.getName());
+        try {
+            // Run Cucumber
+            Runtime.getRuntime().exec("mvn test");
+
+            // Capture console logs
+            String logs = logger.getHandlers()[0].toString();
+
+            // Log the captured logs in the Extent report
+            extentTest.log(Status.PASS, logs);
+        } catch (Exception e) {
+            Assert.fail("Failed to run Cucumber: " + e.getMessage());
+        } finally {
+            extentReports.flush();
+        }
+    }
+}
+$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
+
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import cucumber.api.CucumberOptions;
+import cucumber.api.junit.Cucumber;
+
+import java.util.logging.Logger;
+
+@RunWith(Cucumber.class)
+@CucumberOptions(
+    features = "src/test/resources/features",
+    glue = "com.example.stepdefinitions",
+    plugin = {"pretty"}
+)
+public class CucumberRunner {
+
+    private static ExtentReports extentReports;
+    private static ExtentTest extentTest;
+
+    @BeforeClass
+    public static void setup() {
+        extentReports = new ExtentReports();
+        ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter("test-output/extent-report.html");
+        extentReports.attachReporter(htmlReporter);
+        extentTest = extentReports.createTest("Cucumber Runner");
+    }
+
+    @Test
+    public void runCucumber() {
+        Logger logger = Logger.getLogger(CucumberRunner.class.getName());
+        try {
+            // Run Cucumber
+            Runtime.getRuntime().exec("mvn test");
+
+            // Capture console logs
+            String logs = logger.getHandlers()[0].toString();
+
+            // Log the captured logs in the Extent report
+            extentTest.log(Status.PASS, logs);
+        } catch (Exception e) {
+            Assert.fail("Failed to run Cucumber: " + e.getMessage());
+        } finally {
+            extentReports.flush();
+        }
+    }
+}
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.util.Closer;
+import org.junit.Assert;
+import org.junit.runner.RunWith;
+
+import cucumber.api.CucumberOptions;
+import cucumber.api.junit.Cucumber;
+
+@RunWith(Cucumber.class)
+@CucumberOptions(
+        features = {"path/to/feature/file.feature"},
+        glue = {"com.example.stepdefinitions"},
+        plugin = {"pretty", "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"}
+)
+public class Runner {
+
+    @BeforeClass
+    public static void setup() {
+        // Configure Log4j2 to capture console logs
+        LoggerContext loggerContext = LoggerContext.getContext(false);
+        ConsoleAppender consoleAppender = ConsoleAppender.newBuilder()
+                .setTarget(ConsoleAppender.Target.SYSTEM_OUT)
+                .setLayout(PatternLayout.newBuilder().withPattern("%d{yyyy-MM-dd HH:mm:ss} %level %logger{3} - %msg%n").build())
+                .build();
+        consoleAppender.start();
+        loggerContext.getRootLogger().addAppender(consoleAppender);
+    }
+
+    @AfterClass
+    public static void teardown() {
+        // Remove the console appender from Log4j2
+        LoggerContext loggerContext = LoggerContext.getContext(false);
+        loggerContext.getRootLogger().removeAppender("Console");
+        Closer.closeSilently(loggerContext);
+    }
+
+    @Test
+    public void runCucumber() {
+        // Run Cucumber
+        Result result = JUnitCore.runClasses(Runner.class);
+
+        // Capture console logs
+        List<LogEvent> logEvents = LogCapturer.getEvents();
+
+        // Log the captured logs in the Extent report
+        ExtentTest extentTest = ExtentCucumberFormatter.getCucumberExtentReporter().getExtentTest();
+        for (LogEvent logEvent : logEvents) {
+            extentTest.log(logEvent.getLevel().toString(), logEvent.getMessage().getFormattedMessage());
+        }
+
+        // Fail the test if Cucumber reports any failures
+        for (Failure failure : result.getFailures()) {
+            Assert.fail(failure.getTrace());
+        }
+    }
+}
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.util.Closer;
+import org.junit.Assert;
+import org.junit.runner.RunWith;
+
+import cucumber.api.CucumberOptions;
+import cucumber.api.junit.Cucumber;
+
+@RunWith(Cucumber.class)
+@CucumberOptions(
+        features = {"path/to/feature/file.feature"},
+        glue = {"com.example.stepdefinitions"},
+        plugin = {"pretty", "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"}
+)
+public class Runner {
+
+    @BeforeClass
+    public static void setup() {
+        // Configure Log4j2 to capture console logs
+        LoggerContext loggerContext = LoggerContext.getContext(false);
+        ConsoleAppender consoleAppender = ConsoleAppender.newBuilder()
+                .setTarget(ConsoleAppender.Target.SYSTEM_OUT)
+                .setLayout(PatternLayout.newBuilder().withPattern("%d{yyyy-MM-dd HH:mm:ss} %level %logger{3} - %msg%n").build())
+                .build();
+        consoleAppender.start();
+        loggerContext.getRootLogger().addAppender(consoleAppender);
+    }
+
+    @AfterClass
+    public static void teardown() {
+        // Remove the console appender from Log4j2
+        LoggerContext loggerContext = LoggerContext.getContext(false);
+        loggerContext.getRootLogger().removeAppender("Console");
+        Closer.closeSilently(loggerContext);
+    }
+
+    @Test
+    public void runCucumber() {
+        // Run Cucumber
+        Result result = JUnitCore.runClasses(Runner.class);
+
+        // Capture console logs
+        List<LogEvent> logEvents = LogCapturer.getEvents();
+
+        // Log the captured logs in the Extent report
+        ExtentTest extentTest = ExtentCucumberFormatter.getCucumberExtentReporter().getExtentTest();
+        for (LogEvent logEvent : logEvents) {
+            extentTest.log(logEvent.getLevel().toString(), logEvent.getMessage().getFormattedMessage());
+        }
+
+        // Fail the test if Cucumber reports any failures
+        for (Failure failure : result.getFailures()) {
+            Assert.fail(failure.getTrace());
+        }
+    }
+}
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$444
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import cucumber.api.CucumberOptions;
+import cucumber.api.junit.Cucumber;
+
+@RunWith(Cucumber.class)
+@CucumberOptions(
+        features = {"path/to/feature/file.feature"},
+        glue = {"com.example.stepdefinitions"},
+        plugin = {"pretty", "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"}
+)
+public class Runner {
+
+    private static ByteArrayOutputStream baos;
+
+    @BeforeClass
+    public static void setup() {
+        // Redirect System.out and System.err to a ByteArrayOutputStream
+        baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+        System.setOut(ps);
+        System.setErr(ps);
+    }
+
+    @AfterClass
+    public static void teardown() throws IOException {
+        // Restore System.out and System.err
+        System.setOut(System.out);
+        System.setErr(System.err);
+
+        // Get the captured console output as a list of strings
+        String consoleOutput = baos.toString(StandardCharsets.UTF_8.name());
+        List<String> consoleLines = List.of(consoleOutput.split("\\r?\\n"));
+
+        // Log the captured console output in the Extent report
+        ExtentTest extentTest = ExtentCucumberFormatter.getCucumberExtentReporter().getExtentTest();
+        for (String consoleLine : consoleLines) {
+            extentTest.info(consoleLine);
+        }
+
+        // Close the ByteArrayOutputStream
+        baos.close();
+    }
+
+    @Test
+    public void runCucumber() {
+        // Run Cucumber
+        Result result = JUnitCore.runClasses(Runner.class);
+
+        // Fail the test if Cucumber reports any failures
+        for (Failure failure : result.getFailures()) {
+            Assert.fail(failure.getTrace());
+        }
+    }
+}
+
+
+$$$$$$$$$$$$$$$$$$$$
+ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter("extent.html");
+
+ProcessBuilder pb = new ProcessBuilder("your command here");
+Process p = pb.start();
+BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+String line;
+while ((line = reader.readLine()) != null) {
+    System.out.println(line);
+    // Add the console output to the Extent Report
+    extent.createTest("Console Output").info(line);
+}
+extent.flush();
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+jenaman@gmail.com
+how to embed the terminal or consoles outputs from intellij to HTML report in extent report for cucumber in java
+To embed the terminal or console outputs from IntelliJ to an HTML report in Extent Report for Cucumber in Java, you can use the following steps:
+
+In your Java code, create an instance of the ExtentReports class, which is the main class for Extent Report.
+java
+Copy code
+ExtentReports extent = new ExtentReports();
+Create an instance of the ExtentHtmlReporter class, which is used to generate the HTML report.
+java
+Copy code
+ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter("extent.html");
+Attach the ExtentHtmlReporter object to the ExtentReports object.
+java
+Copy code
+extent.attachReporter(htmlReporter);
+In your Cucumber step definition file, you can capture the console or terminal output by using the ProcessBuilder class.
+java
+Copy code
+ProcessBuilder pb = new ProcessBuilder("your command here");
+Process p = pb.start();
+BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+String line;
+while ((line = reader.readLine()) != null) {
+    System.out.println(line);
+    // Add the console output to the Extent Report
+    extent.createTest("Console Output").info(line);
+}
+Finally, call the flush() method on the ExtentReports object to write the report to the HTML file.
+java
+Copy code
+extent.flush();
+This will embed the console or terminal output into the HTML report generated by Extent Report.
+
+
+
+
+jenaman@gmail.com
+can i do the same thing as above using extent.properties file 
+Yes, you can use an extent.properties file to configure your Extent Report and add the console or terminal output to the report. Here's how you can do it:
+
+Create an extent.properties file in your project's resources directory.
+
+Add the following properties to the extent.properties file to configure your Extent Report:
+
+csharp
+Copy code
+extent.reporter.html.start=false
+extent.reporter.html.out=extent.html
+The extent.reporter.html.start property is set to false so that the HTML report is not generated automatically when the ExtentReports object is created. The extent.reporter.html.out property specifies the file name for the HTML report.
+
+In your Java code, create an instance of the ExtentReports class, and load the extent.properties file.
+java
+Copy code
+ExtentReports extent = new ExtentReports();
+extent.loadConfig(new File("src/main/resources/extent.properties"));
+In your Cucumber step definition file, you can capture the console or terminal output by using the ProcessBuilder class.
+java
+Copy code
+ProcessBuilder pb = new ProcessBuilder("your command here");
+Process p = pb.start();
+BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+String line;
+while ((line = reader.readLine()) != null) {
+    System.out.println(line);
+    // Add the console output to the Extent Report
+    extent.createTest("Console Output").info(line);
+}
+Finally, call the flush() method on the ExtentReports object to write the report to the HTML file.
+java
+Copy code
+extent.flush();
+This will embed the console or terminal output into the HTML report generated by Extent Report, using the configuration specified in the extent.properties file.
+
+
+
+
+jenaman@gmail.com
+ProcessBuilder pb = new ProcessBuilder("your command here"); what should be replaced in place of "your command here" i want to capture for a feature mentioned in extent.properties in cucumber.options
+To capture the console or terminal output for a feature mentioned in extent.properties in Cucumber.options, you can do the following:
+
+In your extent.properties file, specify the feature file path(s) in the cucumber.options property.
+For example:
+
+bash
+Copy code
+cucumber.options=src/test/resources/features/myFeature.feature
+In your Cucumber step definition file, you can get the feature file path(s) from the cucumber.options system property using the System.getProperty() method.
+java
+Copy code
+String cucumberOptions = System.getProperty("cucumber.options");
+List<String> featureFiles = new ArrayList<>();
+Pattern pattern = Pattern.compile("--.*?\\.feature");
+Matcher matcher = pattern.matcher(cucumberOptions);
+while (matcher.find()) {
+    String feature = matcher.group().replaceAll("--", "");
+    featureFiles.add(feature);
+}
+This code uses a regular expression pattern to find all feature file paths in the cucumber.options system property, and adds them to a list.
+
+In your Cucumber step definition file, you can use the feature file path(s) to run the Cucumber tests using the CucumberOptions annotation.
+java
+Copy code
+@CucumberOptions(features = {"src/test/resources/features/myFeature.feature"})
+public class MyFeatureTest {
+    // Step definitions here
+}
+In your Cucumber step definition file, you can capture the console or terminal output for the feature by using the ProcessBuilder class and passing the feature file path(s) as command line arguments.
+java
+Copy code
+for (String featureFile : featureFiles) {
+    ProcessBuilder pb = new ProcessBuilder("cucumber", featureFile);
+    Process p = pb.start();
+    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    String line;
+    while ((line = reader.readLine()) != null) {
+        System.out.println(line);
+        // Add the console output to the Extent Report
+        extent.createTest("Console Output").info(line);
+    }
+}
+This code iterates through the feature file paths and runs each feature file using the cucumber command, passing the feature file path as a command line argument. The console output for each feature file is captured and added to the Extent Report.
+
+
+
+
+jenaman@gmail.com
+but the extent.property has all the details and how can i achive the above using extent.properties file
+To capture the console or terminal output for a feature mentioned in extent.properties in Cucumber.options, you can do the following:
+
+In your extent.properties file, specify the feature file path(s) in the cucumber.options property.
+For example:
+
+bash
+Copy code
+cucumber.options=src/test/resources/features/myFeature.feature
+In your Java code, create an instance of the ExtentReports class, and load the extent.properties file.
+java
+Copy code
+ExtentReports extent = new ExtentReports();
+extent.loadConfig(new File("src/main/resources/extent.properties"));
+In your Cucumber step definition file, you can get the feature file path(s) from the cucumber.options system property using the System.getProperty() method.
+java
+Copy code
+String cucumberOptions = System.getProperty("cucumber.options");
+List<String> featureFiles = new ArrayList<>();
+Pattern pattern = Pattern.compile("--.*?\\.feature");
+Matcher matcher = pattern.matcher(cucumberOptions);
+while (matcher.find()) {
+    String feature = matcher.group().replaceAll("--", "");
+    featureFiles.add(feature);
+}
+This code uses a regular expression pattern to find all feature file paths in the cucumber.options system property, and adds them to a list.
+
+In your Cucumber step definition file, you can use the feature file path(s) to run the Cucumber tests using the CucumberOptions annotation.
+java
+Copy code
+@CucumberOptions(features = {"src/test/resources/features/myFeature.feature"})
+public class MyFeatureTest {
+    // Step definitions here
+}
+In your Cucumber step definition file, you can capture the console or terminal output for the feature by using the ProcessBuilder class and passing the feature file path(s) as command line arguments.
+java
+Copy code
+for (String featureFile : featureFiles) {
+    ProcessBuilder pb = new ProcessBuilder("cucumber", featureFile);
+    Process p = pb.start();
+    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    String line;
+    while ((line = reader.readLine()) != null) {
+        System.out.println(line);
+        // Add the console output to the Extent Report
+        extent.createTest("Console Output").info(line);
+    }
+}
+This code iterates through the feature file paths and runs each feature file using the cucumber command, passing the feature file path as a command line argument. The console output for each feature file is captured and added to the Extent Report.
+
+Note that the cucumber command should be in the system's path, or you can provide the full path to the cucumber command in the ProcessBuilder constructor.
+
+
+
+
+jenaman@gmail.com
+is there anyway to avoid writing the code to  Cucumber step definition file and capture the terminal or console logs 
+Yes, there are some plugins and libraries available that can help you capture the console or terminal output in Cucumber without writing code in the step definition file. Here are a few options:
+
+Cucumber Extent Reporter: This is an open-source Cucumber reporting plugin that provides detailed HTML reports with charts and graphs. It also captures the console output and includes it in the report. You can configure it to capture the console output for all scenarios, or for specific scenarios or tags. To use it, you need to add the following dependency to your pom.xml file:
+xml
+Copy code
+<dependency>
+    <groupId>com.aventstack</groupId>
+    <artifactId>extentreports-cucumber6-adapter</artifactId>
+    <version>1.0.9</version>
+</dependency>
+Then, you can add the following plugin to your CucumberOptions annotation:
+
+java
+Copy code
+@CucumberOptions(plugin = {"com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"})
+And configure the extent.properties file to include the console logs:
+
+bash
+Copy code
+extent.reporter.html.start=false
+extent.reporter.html.out=reports/extent-report.html
+extent.reporter.html.config=src/test/resources/extent-config.xml
+extent.reporter.html.addTestRunnerOutput=true
+extent.reporter.html.addTags=true
+extent.reporter.html.autoCreateRelativePathMedia=true
+extent.reporter.html.view=tests
+extent.reporter.html.captureConsole=true
+Log4j: Log4j is a popular logging library for Java that allows you to configure the logging output to various destinations, including the console, files, and databases. You can configure Log4j to capture the console output and log it to a file or database, and then include the log file or database in your Cucumber report. To use it, you need to add the following dependency to your pom.xml file:
+xml
+Copy code
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-api</artifactId>
+    <version>2.14.1</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-core</artifactId>
+    <version>2.14.1</version>
+</dependency>
+Then, you can create a Log4j configuration file, for example log4j2.xml, that includes an appender to capture the console output:
+
+xml
+Copy code
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>
+And configure the log4j2.xml file in your CucumberOptions annotation:
+
+java
+Copy code
+@CucumberOptions(plugin = {"pretty", "html:target/cucumber-reports",
+        "json:target/cucumber-reports/cucumber.json"},
+        features = {"src/test/resources/features/"},
+        glue = {"com.example.steps"})
+@Log4j2
+public class RunCucumberTest {
+    // ...
+}
+You can then include the log file or database in your Cucumber report using the appropriate Cucumber reporting plugin.
+
+
+
+
+Regenerate response
+
+ChatGPT Feb 13 Version. Free Research Preview. Our goal is to make AI systems more natural and safe to interact with. Your feedback will help us improve.
+New chat
+Embed Console in HTML.
+
+
+IntelliJ: Generate Cucumber Reports
+Duplicate Values in Map.
+Java Console Output to Extent.
+Capture Cucumber logs using Extent.properties.
+Cucumber report with console output.
+IntelliJ Cucumber Test Logs
+Capture Console Details: Extent Report
+Append Console to Extent Report
+Java current directory path.
+Path of extent.properties
+Extending Classes in Java.
+Adding Console Logs.
+Get String from XPATH
+Cucumber + Extent report.
+New chat
+String assignment result.
+Add File to Google Sheet
+Enable Record Type Access.
+Assigning record types: System Administrator.
+Show more
+Clear conversations
+Upgrade to Plus
+NEW
+Dark mode
+Updates & FAQ
+Log out
+8888888888888888888888888888888888888888
+
+jenaman@gmail.com
+how to embed the terminal or consoles outputs from intellij to HTML report in extent report for cucumber in java
+To embed the terminal or console outputs from IntelliJ to an HTML report in Extent Report for Cucumber in Java, you can use the following steps:
+
+In your Java code, create an instance of the ExtentReports class, which is the main class for Extent Report.
+java
+Copy code
+ExtentReports extent = new ExtentReports();
+Create an instance of the ExtentHtmlReporter class, which is used to generate the HTML report.
+java
+Copy code
+ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter("extent.html");
+Attach the ExtentHtmlReporter object to the ExtentReports object.
+java
+Copy code
+extent.attachReporter(htmlReporter);
+In your Cucumber step definition file, you can capture the console or terminal output by using the ProcessBuilder class.
+java
+Copy code
+ProcessBuilder pb = new ProcessBuilder("your command here");
+Process p = pb.start();
+BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+String line;
+while ((line = reader.readLine()) != null) {
+    System.out.println(line);
+    // Add the console output to the Extent Report
+    extent.createTest("Console Output").info(line);
+}
+Finally, call the flush() method on the ExtentReports object to write the report to the HTML file.
+java
+Copy code
+extent.flush();
+This will embed the console or terminal output into the HTML report generated by Extent Report.
+
+
+
+
+jenaman@gmail.com
+can i do the same thing as above using extent.properties file 
+Yes, you can use an extent.properties file to configure your Extent Report and add the console or terminal output to the report. Here's how you can do it:
+
+Create an extent.properties file in your project's resources directory.
+
+Add the following properties to the extent.properties file to configure your Extent Report:
+
+csharp
+Copy code
+extent.reporter.html.start=false
+extent.reporter.html.out=extent.html
+The extent.reporter.html.start property is set to false so that the HTML report is not generated automatically when the ExtentReports object is created. The extent.reporter.html.out property specifies the file name for the HTML report.
+
+In your Java code, create an instance of the ExtentReports class, and load the extent.properties file.
+java
+Copy code
+ExtentReports extent = new ExtentReports();
+extent.loadConfig(new File("src/main/resources/extent.properties"));
+In your Cucumber step definition file, you can capture the console or terminal output by using the ProcessBuilder class.
+java
+Copy code
+ProcessBuilder pb = new ProcessBuilder("your command here");
+Process p = pb.start();
+BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+String line;
+while ((line = reader.readLine()) != null) {
+    System.out.println(line);
+    // Add the console output to the Extent Report
+    extent.createTest("Console Output").info(line);
+}
+Finally, call the flush() method on the ExtentReports object to write the report to the HTML file.
+java
+Copy code
+extent.flush();
+This will embed the console or terminal output into the HTML report generated by Extent Report, using the configuration specified in the extent.properties file.
+
+
+
+
+jenaman@gmail.com
+ProcessBuilder pb = new ProcessBuilder("your command here"); what should be replaced in place of "your command here" i want to capture for a feature mentioned in extent.properties in cucumber.options
+To capture the console or terminal output for a feature mentioned in extent.properties in Cucumber.options, you can do the following:
+
+In your extent.properties file, specify the feature file path(s) in the cucumber.options property.
+For example:
+
+bash
+Copy code
+cucumber.options=src/test/resources/features/myFeature.feature
+In your Cucumber step definition file, you can get the feature file path(s) from the cucumber.options system property using the System.getProperty() method.
+java
+Copy code
+String cucumberOptions = System.getProperty("cucumber.options");
+List<String> featureFiles = new ArrayList<>();
+Pattern pattern = Pattern.compile("--.*?\\.feature");
+Matcher matcher = pattern.matcher(cucumberOptions);
+while (matcher.find()) {
+    String feature = matcher.group().replaceAll("--", "");
+    featureFiles.add(feature);
+}
+This code uses a regular expression pattern to find all feature file paths in the cucumber.options system property, and adds them to a list.
+
+In your Cucumber step definition file, you can use the feature file path(s) to run the Cucumber tests using the CucumberOptions annotation.
+java
+Copy code
+@CucumberOptions(features = {"src/test/resources/features/myFeature.feature"})
+public class MyFeatureTest {
+    // Step definitions here
+}
+In your Cucumber step definition file, you can capture the console or terminal output for the feature by using the ProcessBuilder class and passing the feature file path(s) as command line arguments.
+java
+Copy code
+for (String featureFile : featureFiles) {
+    ProcessBuilder pb = new ProcessBuilder("cucumber", featureFile);
+    Process p = pb.start();
+    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    String line;
+    while ((line = reader.readLine()) != null) {
+        System.out.println(line);
+        // Add the console output to the Extent Report
+        extent.createTest("Console Output").info(line);
+    }
+}
+This code iterates through the feature file paths and runs each feature file using the cucumber command, passing the feature file path as a command line argument. The console output for each feature file is captured and added to the Extent Report.
+
+
+
+
+jenaman@gmail.com
+but the extent.property has all the details and how can i achive the above using extent.properties file
+To capture the console or terminal output for a feature mentioned in extent.properties in Cucumber.options, you can do the following:
+
+In your extent.properties file, specify the feature file path(s) in the cucumber.options property.
+For example:
+
+bash
+Copy code
+cucumber.options=src/test/resources/features/myFeature.feature
+In your Java code, create an instance of the ExtentReports class, and load the extent.properties file.
+java
+Copy code
+ExtentReports extent = new ExtentReports();
+extent.loadConfig(new File("src/main/resources/extent.properties"));
+In your Cucumber step definition file, you can get the feature file path(s) from the cucumber.options system property using the System.getProperty() method.
+java
+Copy code
+String cucumberOptions = System.getProperty("cucumber.options");
+List<String> featureFiles = new ArrayList<>();
+Pattern pattern = Pattern.compile("--.*?\\.feature");
+Matcher matcher = pattern.matcher(cucumberOptions);
+while (matcher.find()) {
+    String feature = matcher.group().replaceAll("--", "");
+    featureFiles.add(feature);
+}
+This code uses a regular expression pattern to find all feature file paths in the cucumber.options system property, and adds them to a list.
+
+In your Cucumber step definition file, you can use the feature file path(s) to run the Cucumber tests using the CucumberOptions annotation.
+java
+Copy code
+@CucumberOptions(features = {"src/test/resources/features/myFeature.feature"})
+public class MyFeatureTest {
+    // Step definitions here
+}
+In your Cucumber step definition file, you can capture the console or terminal output for the feature by using the ProcessBuilder class and passing the feature file path(s) as command line arguments.
+java
+Copy code
+for (String featureFile : featureFiles) {
+    ProcessBuilder pb = new ProcessBuilder("cucumber", featureFile);
+    Process p = pb.start();
+    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    String line;
+    while ((line = reader.readLine()) != null) {
+        System.out.println(line);
+        // Add the console output to the Extent Report
+        extent.createTest("Console Output").info(line);
+    }
+}
+This code iterates through the feature file paths and runs each feature file using the cucumber command, passing the feature file path as a command line argument. The console output for each feature file is captured and added to the Extent Report.
+
+Note that the cucumber command should be in the system's path, or you can provide the full path to the cucumber command in the ProcessBuilder constructor.
+
+
+
+
+jenaman@gmail.com
+is there anyway to avoid writing the code to  Cucumber step definition file and capture the terminal or console logs 
+Yes, there are some plugins and libraries available that can help you capture the console or terminal output in Cucumber without writing code in the step definition file. Here are a few options:
+
+Cucumber Extent Reporter: This is an open-source Cucumber reporting plugin that provides detailed HTML reports with charts and graphs. It also captures the console output and includes it in the report. You can configure it to capture the console output for all scenarios, or for specific scenarios or tags. To use it, you need to add the following dependency to your pom.xml file:
+xml
+Copy code
+<dependency>
+    <groupId>com.aventstack</groupId>
+    <artifactId>extentreports-cucumber6-adapter</artifactId>
+    <version>1.0.9</version>
+</dependency>
+Then, you can add the following plugin to your CucumberOptions annotation:
+
+java
+Copy code
+@CucumberOptions(plugin = {"com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"})
+And configure the extent.properties file to include the console logs:
+
+bash
+Copy code
+extent.reporter.html.start=false
+extent.reporter.html.out=reports/extent-report.html
+extent.reporter.html.config=src/test/resources/extent-config.xml
+extent.reporter.html.addTestRunnerOutput=true
+extent.reporter.html.addTags=true
+extent.reporter.html.autoCreateRelativePathMedia=true
+extent.reporter.html.view=tests
+extent.reporter.html.captureConsole=true
+Log4j: Log4j is a popular logging library for Java that allows you to configure the logging output to various destinations, including the console, files, and databases. You can configure Log4j to capture the console output and log it to a file or database, and then include the log file or database in your Cucumber report. To use it, you need to add the following dependency to your pom.xml file:
+xml
+Copy code
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-api</artifactId>
+    <version>2.14.1</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-core</artifactId>
+    <version>2.14.1</version>
+</dependency>
+Then, you can create a Log4j configuration file, for example log4j2.xml, that includes an appender to capture the console output:
+
+xml
+Copy code
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>
+And configure the log4j2.xml file in your CucumberOptions annotation:
+
+java
+Copy code
+@CucumberOptions(plugin = {"pretty", "html:target/cucumber-reports",
+        "json:target/cucumber-reports/cucumber.json"},
+        features = {"src/test/resources/features/"},
+        glue = {"com.example.steps"})
+@Log4j2
+public class RunCucumberTest {
+    // ...
+}
+You can then include the log file or database in your Cucumber report using the appropriate Cucumber reporting plugin.
+
+
+
+
+Regenerate response
+
+ChatGPT Feb 13 Version. Free Research Preview. Our goal is to make AI systems more natural and safe to interact with. Your feedback will help us improve.
+New chat
+Embed Console in HTML.
+
+
+IntelliJ: Generate Cucumber Reports
+Duplicate Values in Map.
+Java Console Output to Extent.
+Capture Cucumber logs using Extent.properties.
+Cucumber report with console output.
+IntelliJ Cucumber Test Logs
+Capture Console Details: Extent Report
+Append Console to Extent Report
+Java current directory path.
+Path of extent.properties
+Extending Classes in Java.
+Adding Console Logs.
+Get String from XPATH
+Cucumber + Extent report.
+New chat
+String assignment result.
+Add File to Google Sheet
+Enable Record Type Access.666666666666666
+Assigning record types: System Administrator.
+Show more
+Clear conversations
+Upgrade to Plus
+NEW
+Dark mode
+Updates & FAQ
+
+66666666666666666666666666666666666666666666666666666666666666666666
+
+<dependency>
+    <groupId>com.aventstack</groupId>
+    <artifactId>extentreports-cucumber6-adapter</artifactId>
+    <version>1.0.9</version>
+</dependency>
+66666666666666666666666666666666666666
+
+@CucumberOptions(plugin = {"com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"})
+
+777777777777777777777777777777777777777
+
+extent.reporter.html.start=false
+extent.reporter.html.out=reports/extent-report.html
+extent.reporter.html.config=src/test/resources/extent-config.xml
+extent.reporter.html.addTestRunnerOutput=true
+extent.reporter.html.addTags=true
+extent.reporter.html.autoCreateRelativePathMedia=true
+extent.reporter.html.view=tests
+extent.reporter.html.captureConsole=true
+
+
+8888888888888888888888888888888888
+
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-api</artifactId>
+    <version>2.14.1</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-core</artifactId>
+    <version>2.14.1</version>
+</dependency>
+
+999999999999999999999999999999999999999999999999999999999
+Then, you can create a Log4j configuration file, for example log4j2.xml, that includes an appender to capture the console output:
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>
+
+9999999999999999999999999999999999999999999999999999999999999
+
+And configure the log4j2.xml file in your CucumberOptions annotation:
+@CucumberOptions(plugin = {"pretty", "html:target/cucumber-reports",
+        "json:target/cucumber-reports/cucumber.json"},
+        features = {"src/test/resources/features/"},
+        glue = {"com.example.steps"})
+@Log4j2
+public class RunCucumberTest {
+    // ...
+}
+
+99999999999999999999999999999999999999999
+
+
+webdriver.headless=true
+webdriver.chrome.driver=path/to/chromedriver
+webdriver.chrome.args=--headless --disable-gpu --window-size=1920,1080
+
+66666666666666666666666666666666666666666
+
+# Start HTML reporter
+extent.reporter.html.start=true
+
+# Set output file path
+extent.reporter.html.out=reports/extent-report.html
+
+# Set configuration file path
+extent.reporter.html.config=src/test/resources/extent-config.xml
+
+# Add test runner output to report
+extent.reporter.html.addTestRunnerOutput=true
+
+# Add scenario tags to report
+extent.reporter.html.addTags=true
+
+# Enable automatic creation of relative path media
+extent.reporter.html.autoCreateRelativePathMedia=true
+
+# Set default view to 'tests'
+extent.reporter.html.view=tests
+
+# Capture console logs in report
+extent.reporter.html.captureConsole=true
+
+8888888888888888888888888888
+
+<dependency>
+    <groupId>ch.qos.logback</groupId>
+    <artifactId>logback-classic</artifactId>
+    <version>1.2.6</version>
+</dependency>
+
+
+888888888888888888888888888888888
+
+<configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%-5level [%thread] %logger{15} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/test.log</file>
+        <encoder>
+            <pattern>%-5level [%thread] %logger{15} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </root>
+</configuration>
+
+
+99999999999999999999999999999999999999
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class TestRunner {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestRunner.class);
+
+    // ...
+
+    @BeforeClass
+    public static void setupLogging() {
+        System.setProperty("logback.configurationFile", "logback.xml");
+        LOGGER.info("Logback logging system initialized.");
+    }
+
+    // ...
+}
+
+
+99999999999999999999999999999999999999999
+
+<extentreports>
+    <configuration>
+        <!-- ... -->
+        <logger>
+            <file>${basedir}/logs/test.log</file>
+        </logger>
+    </configuration>
+</extentreports>
+
+
+99999999999999999999999999999999999
+
+
+
+777777777777777777777777777777
+
+Log out
+
+
+
+
+
+
+-----------------------------------
+
