@@ -1,0 +1,60 @@
+import io.cucumber.plugin.EventListener;
+import io.cucumber.plugin.event.EventPublisher;
+import io.cucumber.plugin.event.TestStepFinished;
+import io.cucumber.plugin.event.TestStepStarted;
+import io.cucumber.plugin.test.PickleStepTestStep;
+import io.cucumber.core.exception.CucumberException;
+import net.masterthought.cucumber.Configuration;
+import net.masterthought.cucumber.ReportBuilder;
+import net.masterthought.cucumber.Reportable;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class CustomLogListener implements EventListener {
+    private final List<String> jsonPaths;
+    private final ReportBuilder reportBuilder;
+
+    public CustomLogListener() {
+        File reportDirectory = new File("target/cucumber-html-reports");
+        jsonPaths = new ArrayList<>();
+        for (File file : reportDirectory.listFiles()) {
+            if (file.getName().endsWith(".json")) {
+                jsonPaths.add(file.getAbsolutePath());
+            }
+        }
+
+        Configuration configuration = new Configuration(reportDirectory, "My Test Results");
+        reportBuilder = new ReportBuilder(jsonPaths, configuration);
+    }
+
+    @Override
+    public void setEventPublisher(EventPublisher publisher) {
+        publisher.registerHandlerFor(TestStepStarted.class, this::handleTestStepStarted);
+        publisher.registerHandlerFor(TestStepFinished.class, this::handleTestStepFinished);
+    }
+
+    private void handleTestStepStarted(TestStepStarted event) {
+        String stepName = ((PickleStepTestStep) event.getTestStep()).getStep().getText();
+        reportBuilder.getScenario().createNode(stepName); // create a node for the step in the report
+    }
+
+    private void handleTestStepFinished(TestStepFinished event) {
+        String status = event.getResult().getStatus().name();
+        if (status.equals("PASSED")) {
+            reportBuilder.getScenario().getLast().pass(status); // set the status of the last node to PASSED
+        } else if (status.equals("FAILED")) {
+            Throwable error = event.getResult().getError();
+            reportBuilder.getScenario().getLast().fail(error); // set the status of the last node to FAILED and attach the error
+        } else {
+            reportBuilder.getScenario().getLast().skip(status); // set the status of the last node to SKIPPED
+        }
+    }
+
+    public void generateReport() {
+        Reportable result = reportBuilder.generateReports();
+        // do something with the result, e.g. check if the report generation succeeded or failed
+    }
+}
